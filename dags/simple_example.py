@@ -36,17 +36,17 @@ default_args = {
 }
 
 dag = DAG(
-    dag_id = 'tutorial',
-    description = 'Simple DAG downloaded from Airflow'
+    dag_id='tutorial',
+    description='Simple DAG downloaded from Airflow',
     default_args=default_args,
-    schedule_interval=timedelta(days=1),
+    schedule_interval=timedelta(days=1)
 )
 
 # t1, t2 and t3 are examples of tasks created by instantiating operators
 t1 = BashOperator(
     task_id='print_date',
     bash_command='date',
-    dag=dag,
+    dag=dag
 )
 
 t2 = BashOperator(
@@ -54,7 +54,7 @@ t2 = BashOperator(
     depends_on_past=False,
     bash_command='sleep 5',
     retries=3,
-    dag=dag,
+    dag=dag
 )
 
 dag.doc_md = __doc__
