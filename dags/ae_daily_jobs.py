@@ -7,7 +7,7 @@ from airflow.operators.bash_operator import BashOperator
 from airflow.utils.dates import days_ago
 
 tz = timezone("America/Chicago")
-MAILTO = ['qin@simpli.fi', 'DSFR@simpli.fi']
+MAILTO = ['qin@simpli.fi']
 
 default_args = {
     'owner': 'QW',
@@ -46,10 +46,11 @@ clustering = KubernetesPodOperator(
     namespace='default',
     image="us.icr.io/sifi_ds/audience_expansion",
     cmds=["/bin/sh", "-c"],
-    arguments=["python3" "/audience_development/keyword_recommendation/kwd_cluster.py;"],
+    arguments=["python3", "/audience_development/keyword_recommendation/kwd_cluster.py;"],
     labels={"environment": "production", "track": "daily"},
     name="clustering",
     task_id="kw_cluster",
+    service_account_name="airflowf0050-worker-0:default",
     get_logs=True,
     dag=dag
 )
