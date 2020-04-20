@@ -50,7 +50,6 @@ clustering = KubernetesPodOperator(
     labels={"environment": "production", "track": "daily"},
     name="clustering",
     task_id="kw_cluster",
-    service_account_name="airflowf0050-worker-0:default",
     get_logs=True,
     dag=dag
 )
