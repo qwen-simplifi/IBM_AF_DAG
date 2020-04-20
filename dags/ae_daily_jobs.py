@@ -17,7 +17,7 @@ default_args = {
     'email_on_failure': True,
     'email_on_retry': True,
     'retries': 1,
-    'retry_delay': timedelta(minutes=5),
+    'retry_delay': timedelta(minutes=1),
     'task_concurrency': 1,
     'pool': 'default_pool'
     # 'queue': 'bash_queue',
@@ -46,7 +46,7 @@ clustering = KubernetesPodOperator(
     namespace='default',
     image="us.icr.io/sifi_ds/audience_expansion",
     cmds=["/bin/sh", "-c"],
-    arguments=["python3", "/audience_development/keyword_recommendation/kwd_cluster.py;"],
+    arguments=["python3", "/audience_development/keyword_recommendation/kwd_cluster.py"],
     labels={"environment": "production", "track": "daily"},
     name="clustering",
     task_id="kw_cluster",
