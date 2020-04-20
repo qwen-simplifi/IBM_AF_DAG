@@ -50,6 +50,7 @@ clustering = KubernetesPodOperator(
     labels={"environment": "production", "track": "daily"},
     name="clustering",
     task_id="kw_cluster",
+    in_cluster=True,
     get_logs=True,
     dag=dag
 )
