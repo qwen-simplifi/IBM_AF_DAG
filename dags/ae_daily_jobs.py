@@ -2,17 +2,20 @@ from airflow import DAG
 from datetime import datetime, timedelta
 from pendulum import timezone
 
+from airflow.contrib.kubernetes.pod import Port
 from airflow.contrib.operators.kubernetes_pod_operator import KubernetesPodOperator
 from airflow.operators.bash_operator import BashOperator
 from airflow.utils.dates import days_ago
 
-tz = timezone("America/Chicago")
+TZ = timezone("America/Chicago")
 MAILTO = ['qin@simpli.fi']
+
+PORT = Port('http', 80)
 
 default_args = {
     'owner': 'QW',
     'depends_on_past': False,
-    'start_date': datetime(2020, 4, 17, 1, 00, 0, tzinfo=tz),
+    'start_date': datetime(2020, 4, 17, 1, 00, 0, tzinfo=TZ),
     'email': MAILTO,
     'email_on_failure': True,
     'email_on_retry': True,
@@ -48,9 +51,11 @@ clustering = KubernetesPodOperator(
     cmds=["/bin/sh", "-c"],
     arguments=["python3", "/audience_development/keyword_recommendation/kwd_cluster.py"],
     labels={"environment": "production", "track": "daily"},
+    ports=[PORT],
     name="clustering",
     task_id="kw_cluster",
     in_cluster=True,
+    is_delete_operator_pod=True,
     get_logs=True,
     dag=dag
 )
