@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from pendulum import timezone
 
 from airflow.contrib.kubernetes.pod import Port
+from airflow.operators.dummy_operator import DummyOperator
 from airflow.contrib.operators.kubernetes_pod_operator import KubernetesPodOperator
 from airflow.operators.bash_operator import BashOperator
 from airflow.utils.dates import days_ago
@@ -45,6 +46,8 @@ dag = DAG(
     catchup=False
 )
 
+start = DummyOperator(task_id='Job_Start', dag=dag)
+
 clustering = KubernetesPodOperator(
     namespace='default',
     image="us.icr.io/sifi_ds/audience_expansion",
@@ -60,4 +63,4 @@ clustering = KubernetesPodOperator(
     dag=dag
 )
 
-clustering
+start >> clustering
