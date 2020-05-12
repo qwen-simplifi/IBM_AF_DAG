@@ -21,8 +21,9 @@ default_args = {
     'email_on_failure': True,
     'email_on_retry': True,
     'retries': 1,
-    'retry_delay': timedelta(minutes=1),
+    'retry_delay': timedelta(minutes=10),
     'task_concurrency': 1,
+    'max_active_runs': 1,
     'pool': 'default_pool'
     # 'queue': 'bash_queue',
     # 'priority_weight': 10,
@@ -42,7 +43,7 @@ dag = DAG(
     dag_id='ae_daily_modeling',
     description='Airflow DAG for three daily modeling processes of Audience Expansion',
     default_args=default_args,
-    schedule_interval='@daily',
+    schedule_interval='0 3 * * *',
     catchup=False
 )
 
@@ -60,6 +61,7 @@ clustering = KubernetesPodOperator(
     in_cluster=True,
     is_delete_operator_pod=True,
     get_logs=True,
+    retries=1,
     dag=dag
 )
 
