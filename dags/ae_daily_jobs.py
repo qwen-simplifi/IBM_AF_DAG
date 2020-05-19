@@ -50,7 +50,7 @@ dag = DAG(
 )
 
 volume_mount = VolumeMount('log-volume',
-                           mount_path='/root/tmp/aelogs',
+                           mount_path='~/tmp/aelogs',
                            sub_path=None,
                            read_only=False)
 
