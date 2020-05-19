@@ -53,11 +53,8 @@ clustering = KubernetesPodOperator(
     namespace='default',
     image="us.icr.io/sifi_ds/audience_expansion",
     cmds=["/bin/sh", "-c"],
-    arguments=["python3",
-               "/audience_development/keyword_recommendation/kwd_cluster.py",
-               ">>",
-               "/pythonprograms/aelogs/kwdrecommend.log",
-               "2>&1"],
+    arguments=["python3 /audience_development/keyword_recommendation/kwd_cluster.py "
+               ">> /pythonprograms/aelogs/kwdrecommend.log 2>&1"],
     labels={"environment": "production", "track": "daily"},
     ports=[PORT],
     name="clustering",
