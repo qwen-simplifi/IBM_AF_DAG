@@ -3,9 +3,11 @@ from datetime import datetime, timedelta
 from pendulum import timezone
 
 from airflow.contrib.kubernetes.pod import Port
-from airflow.operators.dummy_operator import DummyOperator
+from airflow.contrib.kubernetes.volume import Volume
+from airflow.contrib.kubernetes.volume_mount import VolumeMount
 from airflow.contrib.operators.kubernetes_pod_operator import KubernetesPodOperator
 from airflow.operators.bash_operator import BashOperator
+from airflow.operators.dummy_operator import DummyOperator
 from airflow.utils.dates import days_ago
 
 TZ = timezone("America/Chicago")
@@ -47,14 +49,28 @@ dag = DAG(
     catchup=False
 )
 
+volume_mount = VolumeMount('log-volume',
+                           mount_path='/root/tmp/aelogs',
+                           sub_path=None,
+                           read_only=False)
+
+volume_config = {'persistentVolumeClaim':
+    {
+        'claimName': 'log-volume'
+    }
+}
+volume = Volume(name='log-volume', configs=volume_config)
+
 start = DummyOperator(task_id='Job_Start', dag=dag)
 
 clustering = KubernetesPodOperator(
     namespace='default',
     image="us.icr.io/sifi_ds/audience_expansion",
+    volume=[volume],
+    volume_mounts=[volume_mount],
     cmds=["/bin/sh", "-c"],
     arguments=["python3 /audience_development/keyword_recommendation/kwd_cluster.py "
-               ">> /pythonprograms/aelogs/kwdrecommend.log 2>&1"],
+               ">> ~/tmp/aelogs/kwdrecommend.log 2>&1"],
     labels={"environment": "production", "track": "daily"},
     ports=[PORT],
     name="clustering",
