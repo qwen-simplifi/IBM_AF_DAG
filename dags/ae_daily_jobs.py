@@ -23,7 +23,7 @@ default_args = {
     'email_on_failure': True,
     'email_on_retry': True,
     'retries': 1,
-    'retry_delay': timedelta(minutes=10),
+    'retry_delay': timedelta(minutes=1),
     'task_concurrency': 1,
     'max_active_runs': 1,
     'pool': 'default_pool'
