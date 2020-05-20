@@ -49,25 +49,25 @@ dag = DAG(
     catchup=False
 )
 
-volume_mount = VolumeMount('log-volume',
-                           mount_path='/tmp/aelogs',
-                           sub_path=None,
-                           read_only=False)
-
-volume_config = {'persistentVolumeClaim':
-    {
-        'claimName': 'log-volume'
-    }
-}
-volume = Volume(name='log-volume', configs=volume_config)
+# volume_mount = VolumeMount('log-volume',
+#                            mount_path='/tmp/aelogs',
+#                            sub_path=None,
+#                            read_only=False)
+#
+# volume_config = {'persistentVolumeClaim':
+#     {
+#         'claimName': 'log-volume'
+#     }
+# }
+# volume = Volume(name='log-volume', configs=volume_config)
 
 start = DummyOperator(task_id='Job_Start', dag=dag)
 
 clustering = KubernetesPodOperator(
     namespace='default',
     image="us.icr.io/sifi_ds/audience_expansion",
-    volume=[volume],
-    volume_mounts=[volume_mount],
+    # volume=[volume],
+    # volume_mounts=[volume_mount],
     cmds=["/bin/sh", "-c"],
     arguments=["python3 /audience_development/keyword_recommendation/kwd_cluster.py "
                ">> ~/tmp/aelogs/kwdrecommend.log 2>&1"],
