@@ -49,31 +49,17 @@ dag = DAG(
     catchup=False
 )
 
-# volume_mount = VolumeMount('log-volume',
-#                            mount_path='/tmp/aelogs',
-#                            sub_path=None,
-#                            read_only=False)
-#
-# volume_config = {'persistentVolumeClaim':
-#     {
-#         'claimName': 'log-volume'
-#     }
-# }
-# volume = Volume(name='log-volume', configs=volume_config)
-
 start = DummyOperator(task_id='Job_Start', dag=dag)
 
-clustering = KubernetesPodOperator(
+old_keywords = KubernetesPodOperator(
     namespace='default',
     image="us.icr.io/sifi_ds/audience_expansion",
-    # volume=[volume],
-    # volume_mounts=[volume_mount],
     cmds=["/bin/sh", "-c"],
-    arguments=["python3 /audience_development/keyword_recommendation/kwd_cluster.py"],
+    arguments=["python3 /audience_development/keyword_recommendation/kwd_old_kwd.py"],
     labels={"environment": "production", "track": "daily"},
     ports=[PORT],
-    name="clustering",
-    task_id="kw_cluster",
+    name="old_keywords",
+    task_id="old_kwd",
     in_cluster=True,
     is_delete_operator_pod=False,
     get_logs=True,
@@ -81,4 +67,36 @@ clustering = KubernetesPodOperator(
     dag=dag
 )
 
-start >> clustering
+clustering = KubernetesPodOperator(
+    namespace='default',
+    image="us.icr.io/sifi_ds/audience_expansion",
+    cmds=["/bin/sh", "-c"],
+    arguments=["python3 /audience_development/keyword_recommendation/kwd_cluster.py"],
+    labels={"environment": "production", "track": "daily"},
+    ports=[PORT],
+    name="clustering",
+    task_id="kw_cluster",
+    in_cluster=True,
+    is_delete_operator_pod=True,
+    get_logs=True,
+    retries=1,
+    dag=dag
+)
+
+recommendation = KubernetesPodOperator(
+    namespace='default',
+    image="us.icr.io/sifi_ds/audience_expansion",
+    cmds=["/bin/sh", "-c"],
+    arguments=["python3 /audience_development/keyword_recommendation/kwd_recommend.py"],
+    labels={"environment": "production", "track": "daily"},
+    ports=[PORT],
+    name="recommendation",
+    task_id="kw_recommend",
+    in_cluster=True,
+    is_delete_operator_pod=False,
+    get_logs=True,
+    retries=1,
+    dag=dag
+)
+
+start >> old_keywords >> clustering >> recommendation
