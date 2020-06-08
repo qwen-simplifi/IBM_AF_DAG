@@ -62,7 +62,7 @@ old_keywords = KubernetesPodOperator(
     task_id="old_kwd",
     in_cluster=True,
     is_delete_operator_pod=False,
-    get_logs=False,
+    get_logs=True,
     retries=1,
     dag=dag
 )
