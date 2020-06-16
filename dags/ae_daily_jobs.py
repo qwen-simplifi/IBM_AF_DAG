@@ -62,7 +62,7 @@ old_keywords = KubernetesPodOperator(
     task_id="old_kwd",
     in_cluster=True,
     is_delete_operator_pod=False,
-    get_logs=True,
+    get_logs=False,
     retries=1,
     dag=dag
 )
@@ -78,7 +78,7 @@ clustering = KubernetesPodOperator(
     task_id="kw_cluster",
     in_cluster=True,
     is_delete_operator_pod=True,
-    get_logs=True,
+    get_logs=False,
     retries=1,
     dag=dag
 )
@@ -94,7 +94,7 @@ recommendation = KubernetesPodOperator(
     task_id="kw_recommend",
     in_cluster=True,
     is_delete_operator_pod=False,
-    get_logs=True,
+    get_logs=False,
     retries=1,
     dag=dag
 )
