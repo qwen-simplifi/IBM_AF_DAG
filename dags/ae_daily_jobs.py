@@ -55,14 +55,14 @@ old_keywords = KubernetesPodOperator(
     namespace='default',
     image="us.icr.io/sifi_ds/audience_expansion",
     cmds=["/bin/sh", "-c"],
-    arguments=["python3 /audience_development/keyword_recommendation/kwd_old_kwd.py"],
+    arguments=["python3 -u /audience_development/keyword_recommendation/kwd_old_kwd.py"],
     labels={"environment": "production", "track": "daily"},
     ports=[PORT],
     name="old_keywords",
     task_id="old_kwd",
     in_cluster=True,
     is_delete_operator_pod=False,
-    get_logs=False,
+    get_logs=True,
     retries=1,
     dag=dag
 )
