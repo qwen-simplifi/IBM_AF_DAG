@@ -53,7 +53,7 @@ start = DummyOperator(task_id='Job_Start', dag=dag)
 
 old_keywords = KubernetesPodOperator(
     namespace='default',
-    image="us.icr.io/sifi_ds/audience_expansion",
+    image="us.icr.io/sifi_ds/audience_expansion:latest",
     cmds=["/bin/sh", "-c"],
     arguments=["python3 -u /audience_development/keyword_recommendation/kwd_old_kwd.py"],
     labels={"environment": "production", "track": "daily"},
@@ -69,7 +69,7 @@ old_keywords = KubernetesPodOperator(
 
 clustering = KubernetesPodOperator(
     namespace='default',
-    image="us.icr.io/sifi_ds/audience_expansion",
+    image="us.icr.io/sifi_ds/audience_expansion:latest",
     cmds=["/bin/sh", "-c"],
     arguments=["python3 /audience_development/keyword_recommendation/kwd_cluster.py"],
     labels={"environment": "production", "track": "daily"},
@@ -85,7 +85,7 @@ clustering = KubernetesPodOperator(
 
 recommendation = KubernetesPodOperator(
     namespace='default',
-    image="us.icr.io/sifi_ds/audience_expansion",
+    image="us.icr.io/sifi_ds/audience_expansion:latest",
     cmds=["/bin/sh", "-c"],
     arguments=["python3 /audience_development/keyword_recommendation/kwd_recommend.py"],
     labels={"environment": "production", "track": "daily"},
