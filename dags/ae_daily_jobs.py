@@ -56,6 +56,7 @@ old_keywords = KubernetesPodOperator(
     image="us.icr.io/sifi_ds/audience_expansion:latest",
     cmds=["/bin/sh", "-c"],
     arguments=["python3 -u /audience_development/keyword_recommendation/kwd_old_kwd.py"],
+    image_pull_policy='Always',
     labels={"environment": "production", "track": "daily"},
     ports=[PORT],
     name="old_keywords",
